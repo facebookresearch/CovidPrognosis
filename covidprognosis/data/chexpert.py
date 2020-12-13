@@ -1,4 +1,6 @@
 import logging
+import os
+from typing import Callable, Dict, List, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -7,20 +9,20 @@ from .base_dataset import BaseDataset
 
 
 class CheXpertDataset(BaseDataset):
-    """Data loader for CheXpert data set.
+    """
+    Data loader for CheXpert data set.
 
     Args:
-        directory (pathlib.Path): Base directory for data set with subdirectory
+        directory: Base directory for data set with subdirectory
             'CheXpert-v1.0'.
-        split (str, default='train'): String specifying split.
+        split: String specifying split.
             options include:
                 'all': Include all splits.
                 'train': Include training split.
                 'val': Include validation split.
-        label_list (str or list, default='all'): String specifying labels to
-            include. Default is 'all', which loads all labels.
-        transform (transform object, default=None): A composible transform list
-            to be applied to the data.
+        label_list: String specifying labels to include. Default is 'all',
+            which loads all labels.
+        transform: A composible transform list to be applied to the data.
 
 
     Irvin, Jeremy, et al. "Chexpert: A large chest radiograph dataset with
@@ -33,11 +35,11 @@ class CheXpertDataset(BaseDataset):
 
     def __init__(
         self,
-        directory=None,
-        split="train",
-        label_list="all",
-        subselect=None,
-        transform=None,
+        directory: Union[str, os.PathLike],
+        split: str = "train",
+        label_list: Union[str, List[str]] = "all",
+        subselect: Optional[str] = None,
+        transform: Optional[Callable] = None,
     ):
         super().__init__(
             "chexpert_v1", directory, split, label_list, subselect, transform
@@ -80,11 +82,12 @@ class CheXpertDataset(BaseDataset):
             self.csv = pd.read_csv(self.directory / self.csv_path)
         elif self.split == "all":
             self.csv_path = self.directory / "train.csv"
-            self.csv = [
-                pd.read_csv(self.directory / "CheXpert-v1.0" / "train.csv"),
-                pd.read_csv(self.directory / "CheXpert-v1.0" / "valid.csv"),
-            ]
-            self.csv = pd.concat(self.csv)
+            self.csv = pd.concat(
+                [
+                    pd.read_csv(self.directory / "CheXpert-v1.0" / "train.csv"),
+                    pd.read_csv(self.directory / "CheXpert-v1.0" / "valid.csv"),
+                ]
+            )
         else:
             logging.warning(
                 "split {} not recognized for dataset {}, "
@@ -93,7 +96,7 @@ class CheXpertDataset(BaseDataset):
 
         self.csv = self.preproc_csv(self.csv, self.subselect)
 
-    def preproc_csv(self, csv, subselect):
+    def preproc_csv(self, csv: pd.DataFrame, subselect: Optional[str]) -> pd.DataFrame:
         if csv is not None:
             csv["Patient ID"] = csv["Path"].str.extract(pat="(patient\\d+)")
             csv["view"] = csv["Frontal/Lateral"].str.lower()
@@ -103,14 +106,15 @@ class CheXpertDataset(BaseDataset):
 
         return csv
 
-    def __len__(self):
+    def __len__(self) -> int:
         length = 0
         if self.csv is not None:
             length = len(self.csv)
 
         return length
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx: int) -> Dict:
+        assert self.csv is not None
         exam = self.csv.iloc[idx]
 
         filename = self.directory / exam["Path"]

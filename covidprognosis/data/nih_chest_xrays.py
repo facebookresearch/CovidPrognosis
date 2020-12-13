@@ -1,5 +1,7 @@
 import contextlib
 import logging
+import os
+from typing import Callable, Dict, List, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -7,41 +9,31 @@ import pandas as pd
 from .base_dataset import BaseDataset
 
 
-@contextlib.contextmanager
-def temp_seed(seed):
-    state = np.random.get_state()
-    np.random.seed(seed)
-    try:
-        yield
-    finally:
-        np.random.set_state(state)
-
-
 class NIHChestDataset(BaseDataset):
-    """Data loader for NIH data set.
+    """
+    Data loader for NIH data set.
 
     Args:
-        directory (pathlib.Path): Base directory for data set.
-        split (str, default='train'): String specifying split.
+        directory: Base directory for data set.
+        split: String specifying split.
             options include:
                 'all': Include all splits.
                 'train': Include training split.
-        label_list (str or list, default='all'): String specifying labels to
-            include. Default is 'all', which loads all labels.
-        transform (transform object, default=None): A composible transform list
-            to be applied to the data.
+        label_list: String specifying labels to include. Default is 'all',
+            which loads all labels.
+        transform: A composible transform list to be applied to the data.
     """
 
     def __init__(
         self,
-        directory=None,
-        split="train",
-        label_list="all",
-        subselect=None,
-        transform=None,
-        resplit=False,
-        resplit_seed=2019,
-        resplit_ratios=[0.7, 0.2, 0.1],
+        directory: Union[str, os.PathLike],
+        split: str = "train",
+        label_list: Union[str, List[str]] = "all",
+        subselect: Optional[str] = None,
+        transform: Optional[Callable] = None,
+        resplit: bool = False,
+        resplit_seed: int = 2019,
+        resplit_ratios: List[float] = [0.7, 0.2, 0.1],
     ):
         super().__init__(
             "nih-chest-xrays", directory, split, label_list, subselect, transform
@@ -77,12 +69,13 @@ class NIHChestDataset(BaseDataset):
         ]
 
         if resplit:
+            rg = np.random.default_rng(resplit_seed)
+
             self.csv_path = self.directory / "Data_Entry_2017.csv"
             csv = pd.read_csv(self.csv_path)
             patient_list = csv["Patient ID"].unique()
 
-            with temp_seed(resplit_seed):
-                rand_inds = np.random.permutation(len(patient_list))
+            rand_inds = rg.permutation(len(patient_list))
 
             train_count = int(np.round(resplit_ratios[0] * len(patient_list)))
             val_count = int(np.round(resplit_ratios[1] * len(patient_list)))
@@ -120,7 +113,7 @@ class NIHChestDataset(BaseDataset):
 
         self.csv = self.preproc_csv(self.csv, self.subselect)
 
-    def preproc_csv(self, csv, subselect):
+    def preproc_csv(self, csv: pd.DataFrame, subselect: Optional[str]) -> pd.DataFrame:
         if csv is not None:
 
             def format_view(s):
@@ -133,14 +126,15 @@ class NIHChestDataset(BaseDataset):
 
         return csv
 
-    def __len__(self):
+    def __len__(self) -> int:
         length = 0
         if self.csv is not None:
             length = len(self.csv)
 
         return length
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx: int) -> Dict:
+        assert self.csv is not None
         exam = self.csv.iloc[idx]
 
         filename = self.directory / "images" / exam["Image Index"]

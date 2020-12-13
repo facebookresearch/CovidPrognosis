@@ -1,4 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from typing import Tuple
+
 import torch
 import torch.nn as nn
 from torch import Tensor
@@ -15,7 +17,7 @@ class MoCo(nn.Module):
         base_encoder: nn.Module,
         dim: int = 128,
         K: int = 65536,
-        m: int = 0.999,
+        m: float = 0.999,
         T: float = 0.07,
         mlp: bool = False,
     ):
@@ -62,7 +64,7 @@ class MoCo(nn.Module):
 
         # create the queue
         self.register_buffer("queue", torch.randn(dim, K))
-        self.queue = nn.functional.normalize(self.queue, dim=0)
+        self.queue: Tensor = nn.functional.normalize(self.queue, dim=0)
 
         self.register_buffer("queue_ptr", torch.zeros(1, dtype=torch.long))
 
@@ -83,6 +85,7 @@ class MoCo(nn.Module):
 
         batch_size = keys.shape[0]
 
+        assert isinstance(self.queue_ptr, Tensor)
         ptr = int(self.queue_ptr)
         assert (
             self.K % batch_size == 0
@@ -95,7 +98,7 @@ class MoCo(nn.Module):
         self.queue_ptr[0] = ptr
 
     @torch.no_grad()
-    def _batch_shuffle_ddp(self, x: Tensor):
+    def _batch_shuffle_ddp(self, x: Tensor) -> Tuple[Tensor, Tensor]:
         """
         Batch shuffle, for making use of BatchNorm.
         *** Only support DistributedDataParallel (DDP) model. ***
@@ -123,7 +126,7 @@ class MoCo(nn.Module):
         return x_gather[idx_this], idx_unshuffle
 
     @torch.no_grad()
-    def _batch_unshuffle_ddp(self, x: Tensor, idx_unshuffle: Tensor):
+    def _batch_unshuffle_ddp(self, x: Tensor, idx_unshuffle: Tensor) -> Tensor:
         """
         Undo batch shuffle.
         *** Only support DistributedDataParallel (DDP) model. ***
@@ -141,11 +144,12 @@ class MoCo(nn.Module):
 
         return x_gather[idx_this]
 
-    def forward(self, im_q: Tensor, im_k: Tensor):
+    def forward(self, im_q: Tensor, im_k: Tensor) -> Tuple[Tensor, Tensor]:
         """
         Input:
             im_q: a batch of query images
             im_k: a batch of key images
+
         Output:
             logits, targets
         """
@@ -191,7 +195,7 @@ class MoCo(nn.Module):
 
 # utils
 @torch.no_grad()
-def concat_all_gather(tensor: Tensor):
+def concat_all_gather(tensor: Tensor) -> Tensor:
     """
     Performs all_gather operation on the provided tensors.
     *** Warning ***: torch.distributed.all_gather has no gradient.
@@ -202,4 +206,5 @@ def concat_all_gather(tensor: Tensor):
     torch.distributed.all_gather(tensors_gather, tensor, async_op=False)
 
     output = torch.cat(tensors_gather, dim=0)
+
     return output

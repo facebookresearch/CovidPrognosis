@@ -81,22 +81,6 @@ class ToRGB(XRayTransform):
         return sample
 
 
-class MedMadNormalize(XRayTransform):
-    def __init__(self, eps=1e-05):
-        self.eps = eps
-        warn_msg = "MedMadNormalize is being deprecated due to name ambiguity, "
-        warn_msg = warn_msg + "use MedianMaximumAbsoluteDifferenceNormalize instead"
-        logging.warn(warn_msg)
-
-    def __call__(self, sample):
-        median = torch.median(sample["image"])
-        mad = torch.max(sample["image"]) - torch.min(sample["image"])
-
-        sample["image"] = (sample["image"] - median) / (mad + self.eps)
-
-        return sample
-
-
 class MedianMaximumAbsoluteDifferenceNormalize(XRayTransform):
     def __init__(self, eps=1e-05):
         self.eps = eps
@@ -179,21 +163,6 @@ class AddGaussianNoise(XRayTransform):
                 signal_level / snr_level
             ) * torch.tensor(
                 np.random.normal(size=tuple(sample["image"].shape)),
-                dtype=sample["image"].dtype,
-            )
-
-        return sample
-
-
-class AddPoissonNoise(XRayTransform):
-    def __init__(self, p=0.5):
-        self.p = p
-
-    def __call__(self, sample):
-        if np.random.uniform() <= self.p:
-            # use numpy to keep things consistent on numpy random seed
-            sample["image"] = torch.tensor(
-                np.random.poisson(lam=np.absolute(sample["image"].numpy())),
                 dtype=sample["image"].dtype,
             )
 

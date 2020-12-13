@@ -1,4 +1,6 @@
 import logging
+import os
+from typing import Callable, Dict, List, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -7,29 +9,29 @@ from .base_dataset import BaseDataset
 
 
 class MimicCxrJpgDataset(BaseDataset):
-    """Data loader for MIMIC CXR data set.
+    """
+    Data loader for MIMIC CXR data set.
 
     Args:
-        directory (pathlib.Path): Base directory for data set.
-        split (str, default='train'): String specifying split.
+        directory: Base directory for data set.
+        split: String specifying split.
             options include:
                 'all': Include all splits.
                 'train': Include training split.
                 'val': Include validation split.
                 'test': Include testing split.
-        label_list (str or list, default='all'): String specifying labels to
-            include. Default is 'all', which loads all labels.
-        transform (transform object, default=None): A composible transform list
-            to be applied to the data.
+        label_list: String specifying labels to include. Default is 'all',
+            which loads all labels.
+        transform: A composible transform list to be applied to the data.
     """
 
     def __init__(
         self,
-        directory=None,
-        split="train",
-        label_list="all",
-        subselect=None,
-        transform=None,
+        directory: Union[str, os.PathLike],
+        split: str = "train",
+        label_list: Union[str, List[str]] = "all",
+        subselect: Optional[str] = None,
+        transform: Optional[Callable] = None,
     ):
         super().__init__(
             "mimic-cxr-jpg", directory, split, label_list, subselect, transform
@@ -106,9 +108,8 @@ class MimicCxrJpgDataset(BaseDataset):
 
         self.csv = self.preproc_csv(self.csv, self.subselect)
 
-    def preproc_csv(self, csv, subselect):
+    def preproc_csv(self, csv: pd.DataFrame, subselect: Optional[str]) -> pd.DataFrame:
         if csv is not None:
-
             def format_view(s):
                 if s in ("AP", "PA", "AP|PA"):
                     return "frontal"
@@ -131,7 +132,8 @@ class MimicCxrJpgDataset(BaseDataset):
 
         return length
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx: int) -> Dict:
+        assert self.csv is not None
         exam = self.csv.iloc[idx]
 
         subject_id = str(exam["subject_id"])
@@ -161,4 +163,3 @@ class MimicCxrJpgDataset(BaseDataset):
             sample = self.transform(sample)
 
         return sample
-        
