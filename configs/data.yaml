@@ -1,4 +1,4 @@
 paths:
-  nih_path: "/datasets01/covid19/032820/nih-chest-xrays"
-  chexpert_path: "/datasets01/covid19/032820/CheXpert"
+  nih_path: "none"
+  chexpert_path: "none"
   mimic_path: "none"
