@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Callable, Dict, List, Optional, Union
+from typing import Callable, List, Optional, Union
 
 from .base_dataset import BaseDataset
 from .chexpert import CheXpertDataset

@@ -5,7 +5,7 @@ install_requires = []
 setup(
     name="covidprognosis",
     author="Facebook AI Research",
-    author_email="fastmri@fb.com",
+    author_email="mmuckley@fb.com",
     version="0.1",
     packages=find_packages(
         exclude=[
