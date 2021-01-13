@@ -1,0 +1,16 @@
+pretrained_moco_url: https://dl.fbaipublicfiles.com/CovidPrognosis/pretrained_models/
+pretrained_moco_models:
+  [
+    mimic-chexpert_lr_0.01_bs_128_fd_128_qs_65536.pt,
+    mimic-chexpert_lr_0.1_bs_128_fd_128_qs_65536.pt,
+    mimic-chexpert_lr_1.0_bs_128_fd_128_qs_65536.pt,
+    mimic_lr_0.01_bs_128_fd_128_qs_65536.pt,
+    mimic_lr_0.01_bs_128_fd_256_qs_65536.pt,
+    mimic_lr_0.01_bs_128_fd_64_qs_65536.pt,
+    mimic_lr_0.1_bs_128_fd_128_qs_65536.pt,
+    mimic_lr_0.1_bs_128_fd_256_qs_65536.pt,
+    mimic_lr_0.1_bs_128_fd_64_qs_65536.pt,
+    mimic_lr_1.0_bs_128_fd_128_qs_65536.pt,
+    mimic_lr_1.0_bs_128_fd_256_qs_65536.pt,
+    mimic_lr_1.0_bs_128_fd_64_qs_65536.pt,
+  ]
