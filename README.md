@@ -1,9 +1,12 @@
 # CovidPrognosis
 
-This repository contains code for reproducing the paper,
-COVID-19 Deterioration Prediction via Self-Supervised Representation Learning
-and Multi-Image Prediction. Prior to using this code or pretrained models,
-please consult the [Disclaimer](#Disclaimer).
+This repository contains code for reproducing the following paper:
+
+[A. Sriram*, M. Muckley*, K. Sinha, F. Shamout, J. Pineau, K. J. Geras, L. Azour, Y. Aphinyanaphongs, N. Yakubova, W. Moore. COVID-19 Deterioration Prediction via Self-Supervised Representation Learning and Multi-Image Prediction. *arXiv preprint arXiv:2101.04909* (2020).](https://arxiv.org/abs/2101.04909)
+
+We also include models from the MoCo pretraining process for groups interested
+in fine-tuning them on their own data. Prior to using this code or pretrained
+models please consult the [Disclaimer](#Disclaimer).
 
 ## Installation
 
@@ -53,13 +56,13 @@ indicated on their respective websites. For a list of models, see
 the models, please look at the
 [SIP Fine-tuning example](cp_examples/sip_finetune).
 
-The following publication describes MIMIC-CXR-JPG:
+The following publication describes MIMIC-CXR:
 
-Johnson, A.E.W., et al. [MIMIC-CXR, a de-identified publicly available database of chest radiographs with free-text reports](https://www.nature.com/articles/s41597-019-0322-0). *Scientific Data* 6, 317 (2019).
+[MIMIC-CXR, a de-identified publicly available database of chest radiographs with free-text reports (A.E.W. Johnson et al., 2019)](https://www.nature.com/articles/s41597-019-0322-0)
 
 And this publication describes CheXpert:
 
-Irvin J, et al. [Chexpert: A large chest radiograph dataset with uncertainty labels and expert comparison](https://ojs.aaai.org//index.php/AAAI/article/view/3834). In *Proceedings of the AAAI Conference on Artificial Intelligence* 2019 Jul 17 (Vol. 33, pp. 590-597).
+[CheXpert: A large chest radiograph dataset with uncertainty labels and expert comparison (J. Irvin et al., 2019)](https://ojs.aaai.org//index.php/AAAI/article/view/3834)
 
 ## Disclaimer
 
@@ -68,6 +71,22 @@ regarding their reliability, accuracy or suitability for any particular
 application and should be used for research purposes only. The models and code
 are not to be used for public health decisions or responses, or for any
 clinical application or as a substitute for medical advice or guidance.
+
+## Citation
+
+If you use this code or models in your scientific work, please cite the
+following paper:
+
+```bibtex
+@misc{sriram2021covid19,
+      title={COVID-19 Deterioration Prediction via Self-Supervised Representation Learning and Multi-Image Prediction}, 
+      author={Anuroop Sriram and Matthew Muckley and Koustuv Sinha and Farah Shamout and Joelle Pineau and Krzysztof J. Geras and Lea Azour and Yindalon Aphinyanaphongs and Nafissa Yakubova and William Moore},
+      year={2021},
+      eprint={2101.04909},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+```
 
 ## License
 
