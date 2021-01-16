@@ -2,7 +2,7 @@
 
 This repository contains code for reproducing the following paper:
 
-A. Sriram*, Matthew Muckley*, K. Sinha, F. Shamout, J. Pineau, K. J. Geras, L. Azour, Y. Aphinyanaphongs, N. Yakubova, W. Moore. [COVID-19 Deterioration Prediction via Self-Supervised Representation Learning
+A. Sriram*, M. Muckley*, K. Sinha, F. Shamout, J. Pineau, K. J. Geras, L. Azour, Y. Aphinyanaphongs, N. Yakubova, W. Moore. [COVID-19 Deterioration Prediction via Self-Supervised Representation Learning
 and Multi-Image Prediction](https://arxiv.org/abs/2101.04909). *arXiv preprint arXiv:2101.04909 (2020)*.
 
 We also include models from the MoCo pretraining process for groups interested
