@@ -117,7 +117,7 @@ class MIPModel(nn.Module):
         elif self.pooling == "sum":
             pooled_feats = []
             for b, l in enumerate(lens.tolist()):
-                pooled_feats.append(image_feats[b, : int(l)].sum(1))
+                pooled_feats.append(image_feats[b, : int(l)].sum(0))
         else:
             raise ValueError(f"Unkown pooling method: {self.pooling}")
 
