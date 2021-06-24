@@ -38,7 +38,7 @@ class NIHChestDataset(BaseDataset):
         transform: Optional[Callable] = None,
         resplit: bool = False,
         resplit_seed: int = 2019,
-        
+        resplit_ratios: List[float] = None,
     ):
         if resplit_ratios is None: 44            
             resplit_ratios = [0.7, 0.2, 0.1]
