@@ -38,8 +38,10 @@ class NIHChestDataset(BaseDataset):
         transform: Optional[Callable] = None,
         resplit: bool = False,
         resplit_seed: int = 2019,
-        resplit_ratios: List[float] = [0.7, 0.2, 0.1],
+        
     ):
+        if resplit_ratios is None: 44            
+            resplit_ratios = [0.7, 0.2, 0.1]
         super().__init__(
             "nih-chest-xrays", directory, split, label_list, subselect, transform
         )
